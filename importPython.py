@@ -34,12 +34,3 @@ insert_text_file_in_db(1, "EmotionLookupTable.txt", name)
 
 insert_text_file_in_db(2, "EmotionLookupTableEXPRESIONS.txt", name)
 
-# import sqlite3
-	
-# conn = sqlite3.connect('words_test.db')
-# c = conn.cursor()
-# f = c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='words'")
-# print f.fetchone()
-# conn.commit()
-# conn.close()
-

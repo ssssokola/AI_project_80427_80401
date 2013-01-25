@@ -13,24 +13,52 @@ def create_db(name=DB_NAME):
 	conn.close()
 	return name
 
-def insert_text_file_in_db(spec, file_name, db_name):
+def insert_text_file_in_db(spec, file_name, db_name, regexString):
 	import re
 	import sqlite3
 
 	conn = sqlite3.connect(db_name)
-	c = conn.cursor()
-	f = open(file_name, 'r')
-	for line in f:
-		regex_matcher = re.search('^(\w*\*|\w*)\s*?(\d|\-\d)', line)
+	conn.text_factory = str
+	cursor = conn.cursor()
+
+	textFile = open(file_name, 'r')
+	for line in textFile:
+		regex_matcher = re.search(regexString, line)
 		if regex_matcher:
-			c.execute("INSERT INTO words (word, value, specification) VALUES ('"+regex_matcher.group(1)+"',"+regex_matcher.group(2)+","+str(spec)+")")
-	f.close()
+			word = regex_matcher.group(1)
+			value = regex_matcher.group(2)
+			
+			query = """INSERT INTO words (word, value, specification) VALUES (?, ?, ?)"""
+			cursor.execute(query, (str(word), value, spec))
+	textFile.close()
 	conn.commit()
 	conn.close()
 
-#execution
-name = create_db()
-insert_text_file_in_db(1, "EmotionLookupTable.txt", name)
+def resolveWord(word, options):
+	import sqlite3
+	conn = sqlite3.connect(DB_NAME)
+	c = conn.cursor()
+	query = "SELECT * FROM words WHERE word = '" + word + "'"
+	for row in c.execute(query):
+		return row[2] 
 
-insert_text_file_in_db(2, "EmotionLookupTableEXPRESIONS.txt", name)
+def resolveSentence(sentence):
+	words = sentence.split()
+	i = 0
+	result = []
+	for word in words:
+		value = resolveWord(word, 0)
+		result.append(value)
+
+	for value in result:
+		print value
+
+dbName = create_db()
+insert_text_file_in_db(1, "EmotionLookupTable.txt", dbName, '^(\w*)\*?\s*?(\d|\-\d)')
+insert_text_file_in_db(2, "EmotionLookupTableEXPRESIONS.txt", dbName, '^(\S*)\s*?(\d|\-\d)')
+
+resolveSentence("This is the last fuckin day at work alol :) ")
+
+# Fix regex for emotions
+
 

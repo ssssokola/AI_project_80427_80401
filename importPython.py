@@ -50,26 +50,37 @@ def resolveWord(word, options):
 	c = conn.cursor()
 	query = "SELECT * FROM words WHERE word = '" + word + "'"
 	for row in c.execute(query):
-		return row[2] 
+		return {'value' : row[2], 'spec' : row[3]}
 
 def resolveSentence(sentence):
+
 	words = sentence.split()
+	estimated = []
 	result = []
+
+	lastNegative = False
+	finalEstimation = 0
+
 	for word in words:
-		value = resolveWord(word, 0)
-		result.append(value)
+		valueAndSpec = resolveWord(word, 0)
+		if valueAndSpec:
+			if valueAndSpec['spec'] == FileTypes.Negating:
+				lastNegative = True
+			elif valueAndSpec['spec'] == FileTypes.Emotions:
+				if lastNegative:
+					finalEstimation += valueAndSpec['value'] * -1
+					lastNegative = False
+				else:
+					finalEstimation += valueAndSpec['value'] 
+	print finalEstimation
 
-	for value in result:
-		print value
-
-create_db()
-
+#create_db()
 FileTypes = enum('Emotions', 'Emoteicons', 'NonEmotions', 'Negating')
-insert_text_file_in_db(FileTypes.Emotions, "EmotionLookupTable.txt", '^(\w*)\*?\s*?(\d|\-\d)')
-insert_text_file_in_db(FileTypes.Emoteicons, "EmotionLookupTableEXPRESIONS.txt", '^(\S*)\s*?(\d|\-\d)')
-insert_text_file_in_db(FileTypes.NonEmotions, "EnglishWordList.txt", '^(\w*)')
-insert_text_file_in_db(FileTypes.Negating, "NegatingWordList.txt", '^(\w*)')
+#insert_text_file_in_db(FileTypes.Emotions, "EmotionLookupTable.txt", '^(\w*)\*?\s*?(\d|\-\d)')
+#insert_text_file_in_db(FileTypes.Emoteicons, "EmotionLookupTableEXPRESIONS.txt", '^(\S*)\s*?(\d|\-\d)')
+#insert_text_file_in_db(FileTypes.NonEmotions, "EnglishWordList.txt", '^(\w*)')
+#insert_text_file_in_db(FileTypes.Negating, "NegatingWordList.txt", '^(\w*)')
 
 resolveSentence("This is the last fuckin day at work alol :) ")
-
+#print resolveWord("not", 0)['value']
 

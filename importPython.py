@@ -71,16 +71,18 @@ def resolveSentence(sentence):
 					finalEstimation += valueAndSpec['value'] * -1
 					lastNegative = False
 				else:
-					finalEstimation += valueAndSpec['value'] 
+					finalEstimation += valueAndSpec['value']
+			elif valueAndSpec['spec'] == FileTypes.Emoteicons:
+				finalEstimation += valueAndSpec['value']
 	print finalEstimation
 
-#create_db()
+create_db()
 FileTypes = enum('Emotions', 'Emoteicons', 'NonEmotions', 'Negating')
 #insert_text_file_in_db(FileTypes.Emotions, "EmotionLookupTable.txt", '^(\w*)\*?\s*?(\d|\-\d)')
 #insert_text_file_in_db(FileTypes.Emoteicons, "EmotionLookupTableEXPRESIONS.txt", '^(\S*)\s*?(\d|\-\d)')
 #insert_text_file_in_db(FileTypes.NonEmotions, "EnglishWordList.txt", '^(\w*)')
 #insert_text_file_in_db(FileTypes.Negating, "NegatingWordList.txt", '^(\w*)')
+insert_text_file_in_db(FileTypes.Negating, "IdiomLookupTable.txt", '^(\w*\s*)*(\d|\-d)')
 
 resolveSentence("This is the last fuckin day at work alol :) ")
-#print resolveWord("not", 0)['value']
-
+resolveSentence("Hey whats up")

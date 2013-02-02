@@ -70,7 +70,7 @@ def resolveSentence(sentence):
 			quotient = 0
 
 			if abs(positive) + abs(negative) != 0:
-				quotient = 1.0 * positive / ( abs(positive) + abs(negative)) * 10 - 5
+				quotient = round((1.0 * res[0] / ( abs(res[0]) + abs(res[1]))) * 10 - 5)
 				print word + " " + str(res[0]) + " " + str(res[1]) + " " + str(quotient)
 			
 			if quotient > 0:
@@ -153,7 +153,7 @@ FileTypes = enum('Emotions', 'Emoteicons', 'NonEmotions', 'Negating', 'Idiom', '
 # insert_text_file_in_db(FileTypes.Idiom, "IdiomLookupTable.txt", '^(\w*\s*)*(\d|\-d)')
 # insert_text_file_in_db(FileTypes.EnglishWord, "EnglishWordList.txt", '^(\w*)')
 
-resolveSentence("This is the last fuckin day at work alol biatches :) ")
+resolveSentence("The world is beautiful and I love flowers ")
 #resolveSentence("Hey whats up")
 #resolveSentence("This will be the most fucking crappy jurney ever !!")
 #resolveSentence("I cannot belive this could happen !")
